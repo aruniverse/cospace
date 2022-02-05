@@ -8,16 +8,18 @@
     "build:clean": "lage build --no-cache",
     "build:clean:profile": "lage build --no-cache --profile",
     "clean": "lage clean && rimraf node_modules",
-    "list-pkgs": "pnpm ls -r --depth -1"
+    "list-pkgs": "pnpm ls -r --depth -1",
+    "setOverrides": "node ./scripts/setOverrides.js"
   },
   "devDependencies": {
+    "fast-glob": "^3.2.0",
     "lage": "latest",
     "rimraf": "^3.0.2"
   },
   "packageManager": "pnpm@6.29.1",
-  "//note": "run `pnpm ls -r --depth -1` to see all pkgs in the workspace, then for each one set the override to `workspace:*`",
   "pnpm": {
-    "overrides": {
-    }
+    "overrides": {},
+    "prefer-workspace-packages": true,
+    "link-workspace-packages": "deep"
   }
 }
