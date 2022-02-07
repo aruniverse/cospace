@@ -1,16 +1,16 @@
 "use strict";
 
-const fs = require("fs");
-const fg = require("fast-glob");
+const { readFileSync, writeFileSync } = require("fs");
+const { execSync } = require("child_process");
 
 const pkgJsonPath = "package.json";
 
-const overrides = fg
-  .sync("**/package.json", {
-    ignore: ["**/node_modules/**"],
+const overrides = JSON.parse(
+  execSync("pnpm ls -r --depth -1 --json", {
+    encoding: "utf8",
   })
-  .map((entry) => {
-    const pkg = JSON.parse(fs.readFileSync(entry));
+)
+  .map((pkg) => {
     if (!pkg.private) {
       return pkg.name;
     }
@@ -21,10 +21,8 @@ const overrides = fg
     return overrides;
   }, {});
 
-const pkgJsonData = JSON.parse(
-  fs.readFileSync(pkgJsonPath, { encoding: "utf8" })
-);
+const pkgJsonData = JSON.parse(readFileSync(pkgJsonPath, { encoding: "utf8" }));
 
 pkgJsonData.pnpm.overrides = overrides;
 
-fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJsonData, null, 2) + "\n");
+writeFileSync(pkgJsonPath, JSON.stringify(pkgJsonData, null, 2) + "\n");

@@ -8,11 +8,10 @@
     "build:clean": "lage build --no-cache",
     "build:clean:profile": "lage build --no-cache --profile",
     "clean": "lage clean && rimraf node_modules",
-    "list-pkgs": "pnpm ls -r --depth -1",
+    "list-pkgs": "pnpm ls -r --depth -1 --json",
     "setOverrides": "node ./scripts/setOverrides.js"
   },
   "devDependencies": {
-    "fast-glob": "^3.2.0",
     "lage": "latest",
     "rimraf": "^3.0.2"
   },
