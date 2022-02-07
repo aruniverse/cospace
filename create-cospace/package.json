@@ -1,0 +1,29 @@
+{
+  "name": "create-cospace",
+  "version": "0.1.0",
+  "description": "Setup a `CoSpace` to link multiple (mono)repos together!",
+  "author": "https://github.com/aruniverse",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aruniverse/cospace",
+    "directory": "create-cospace"
+  },
+  "type": "module",
+  "bin": {
+    "create-cospace": "index.js"
+  },
+  "files": [
+    "index.js",
+    "template"
+  ],
+  "keywords": [
+    "cospace",
+    "monorepo",
+    "pnpm",
+    "workspaces"
+  ],
+  "dependencies": {
+    "fs-extra": "^10.0.0",
+    "meow": "^10.0.0"
+  }
+}
