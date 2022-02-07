@@ -58,6 +58,7 @@ const init = async () => {
 
   console.log(`\nCreating cospace in ${cospaceDir}...`);
 
+  const __dirname = path.resolve()
   await fs.copy(path.join(__dirname, "../template"), cospaceDir);
 
   process.chdir(cospaceDir);
