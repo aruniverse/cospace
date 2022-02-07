@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { fileURLToPath } from "url";
 import * as path from "path";
 import fs from "fs-extra";
 import meow from "meow";
@@ -58,8 +59,9 @@ const init = async () => {
 
   console.log(`\nCreating cospace in ${cospaceDir}...`);
 
-  const __dirname = path.resolve()
-  await fs.copy(path.join(__dirname, "../template"), cospaceDir);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  await fs.copy(path.join(__dirname, "./template"), cospaceDir);
 
   process.chdir(cospaceDir);
 
