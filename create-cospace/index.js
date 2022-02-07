@@ -52,13 +52,13 @@ const init = async () => {
       );
       process.exit(1);
     } else {
-      await fse.mkdir(cospaceDir);
+      await fs.mkdir(cospaceDir);
     }
   }
 
   console.log(`\nCreating cospace in ${cospaceDir}...`);
 
-  await fse.copy(path.join(__dirname, "../template"), cospaceDir);
+  await fs.copy(path.join(__dirname, "../template"), cospaceDir);
 
   process.chdir(cospaceDir);
 
