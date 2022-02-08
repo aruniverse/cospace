@@ -8,9 +8,14 @@ import { execSync } from "child_process";
 
 const help = `
   Usage:
-    $ npx create-cospace [flags...] [<dir>]
+    $ npx cospace <command> [<args>] 
 
-  If <dir> is not provided, will default to current dir.
+  Commands:
+    init <dir>          Initialize a new CoSpace
+
+        If <dir> is not provided, will default to current dir.
+
+    override            Override the CoSpace's pnpm config
 
   Flags:
     --help, -h          Show this help message
@@ -28,23 +33,7 @@ const checkPnpmInstalled = () => {
   }
 };
 
-const init = async () => {
-  const { input, flags, showHelp, showVersion } = meow(help, {
-    importMeta: import.meta,
-    booleanDefault: undefined,
-    flags: {
-      help: { type: "boolean", default: false, alias: "h" },
-      version: { type: "boolean", default: false, alias: "v" },
-    },
-  });
-
-  if (flags.help) showHelp();
-  if (flags.version) showVersion();
-
-  checkPnpmInstalled();
-
-  const cospaceDir = input[0] || ".";
-
+const init = async (cospaceDir = ".") => {
   const relativeDir = path.relative(process.cwd(), cospaceDir);
   if (relativeDir !== "") {
     if (fs.existsSync(cospaceDir)) {
@@ -66,8 +55,64 @@ const init = async () => {
   process.chdir(cospaceDir);
 
   console.log(
-    "Your CoSpace has been initialized! Look at the Readme, setup your CoSpace, install, and you're good to go!"
+    "Your CoSpace has been initialized! Look at the Readme, setup your CoSpace, install, build and you're good to go!"
   );
 };
 
-init().catch(console.error);
+const overridePnpm = async () => {
+  const pkgJsonPath = "package.json";
+
+  const overrides = JSON.parse(
+    execSync("pnpm ls -r --depth -1 --json", {
+      encoding: "utf8",
+    })
+  )
+    .map((pkg) => {
+      if (!pkg.private) {
+        return pkg.name;
+      }
+    })
+    .filter((name) => name)
+    .sort()
+    .reduce((overrides, name) => {
+      overrides[name] = "workspace:*";
+      return overrides;
+    }, {});
+
+  const pkgJsonData = await fs.readJSON(pkgJsonPath);
+
+  pkgJsonData.pnpm.overrides = overrides;
+
+  await fs.writeJSON(pkgJsonPath, pkgJsonData, { spaces: 2 });
+
+  console.log(
+    "Your CoSpace's workspace links have been overriden. Run install, build and you're good to go!"
+  );
+};
+
+const run = async () => {
+  const { input, flags, showHelp, showVersion } = meow(help, {
+    importMeta: import.meta,
+    flags: {
+      help: { type: "boolean", default: false, alias: "h" },
+      version: { type: "boolean", default: false, alias: "v" },
+    },
+  });
+
+  if (flags.help || !input.length) showHelp();
+  if (flags.version) showVersion();
+
+  checkPnpmInstalled();
+
+  if (input[0] === "init") {
+    await init();
+  } else if (input[0] === "override") {
+    await overridePnpm();
+  } else {
+    console.log(
+      `Unrecognized command, ${input[0]}, please try again with --help for more info.`
+    );
+  }
+};
+
+run().catch(console.error);

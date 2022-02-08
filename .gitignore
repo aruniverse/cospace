@@ -1,6 +1,4 @@
 node_modules/
 .pnpm-debug.log
-pnpm-lock.yaml
 
-repos/*
-!repos/.empty
+test/

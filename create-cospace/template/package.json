@@ -6,9 +6,10 @@
     "build": "lage build",
     "build:clean": "lage build --no-cache",
     "clean": "lage clean && rimraf node_modules",
-    "setOverrides": "node ./scripts/setOverrides.js"
+    "setOverrides": "cospace override"
   },
   "devDependencies": {
+    "create-cospace": "latest",
     "lage": "latest",
     "rimraf": "^3.0.2"
   },
