@@ -105,7 +105,7 @@ const run = async () => {
   checkPnpmInstalled();
 
   if (input[0] === "init") {
-    await init();
+    await init(input[1]);
   } else if (input[0] === "override") {
     await overridePnpm();
   } else {
