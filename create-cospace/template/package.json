@@ -1,17 +1,17 @@
 {
   "name": "my-cospace",
   "version": "0.1.0",
+  "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "build": "lage build",
     "build:clean": "lage build --no-cache",
-    "clean": "lage clean && rimraf node_modules",
+    "clean": "lage clean --no-cache && cospace purge",
     "setOverrides": "cospace override"
   },
   "devDependencies": {
     "create-cospace": "latest",
-    "lage": "latest",
-    "rimraf": "^3.0.2"
+    "lage": "latest"
   },
   "pnpm": {
     "overrides": {},

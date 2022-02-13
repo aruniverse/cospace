@@ -13,9 +13,10 @@ const help = `
   Commands:
     init <dir>          Initialize a new CoSpace
 
-        If <dir> is not provided, will default to current dir.
+        If <dir> is not provided, will default to current dir
 
     override            Override the CoSpace's pnpm config
+    purge               Purge all node_modules from the CoSpace
 
   Flags:
     --help, -h          Show this help message
@@ -53,6 +54,11 @@ const init = async (cospaceDir = ".") => {
   await fs.copy(path.join(__dirname, "./template"), cospaceDir);
 
   process.chdir(cospaceDir);
+  try {
+    execSync("pnpm i");
+  } catch (e) {
+    console.error("Failed to install, please run install prior to CoSpace use");
+  }
 
   console.log(
     "Your CoSpace has been initialized! Look at the Readme, setup your CoSpace, install, build and you're good to go!"
@@ -90,6 +96,18 @@ const overridePnpm = async () => {
   );
 };
 
+const purge = async () => {
+  const paths = JSON.parse(
+    execSync("pnpm ls -r --depth -1 --json", {
+      encoding: "utf8",
+    })
+  ).map((pkg) => pkg.path);
+
+  await Promise.all(paths.map((path) => fs.remove(`${path}/node_modules`)));
+
+  console.log("All node_modules have been purged from the CoSpace.");
+};
+
 const run = async () => {
   const { input, flags, showHelp, showVersion } = meow(help, {
     importMeta: import.meta,
@@ -108,6 +126,8 @@ const run = async () => {
     await init(input[1]);
   } else if (input[0] === "override") {
     await overridePnpm();
+  } else if (input[0] === "purge") {
+    await purge();
   } else {
     console.log(
       `Unrecognized command, ${input[0]}, please try again with --help for more info.`
