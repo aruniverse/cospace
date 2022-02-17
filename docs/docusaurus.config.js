@@ -8,8 +8,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: "CoSpace",
   tagline: "Link multiple (mono)repos together!",
-  url: "https://aruniverse.github.io/cospace",
-  baseUrl: "/",
+  url: "https://aruniverse.github.io/",
+  baseUrl: "/cospace/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
