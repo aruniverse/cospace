@@ -10,7 +10,7 @@
     "setOverrides": "cospace override"
   },
   "devDependencies": {
-    "create-cospace": "latest",
+    "cospace": "latest",
     "lage": "latest"
   },
   "pnpm": {

@@ -10,7 +10,7 @@ Setup a `CoSpace` to link multiple (mono)repos together!
 
 ## Getting started
 
-1. Install `create-cospace`, then run `npx cospace init`
+1. Install `cospace`, then run `npx cospace init`
 
 1. Clone all the repos you want to link together under the `repos` directory. You can use [sparse checkouts](https://github.blog/2020-01-17-bring-your-monorepo-down-to-size-with-sparse-checkout/) to only clone the directories you need.
 
