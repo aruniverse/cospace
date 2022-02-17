@@ -1,5 +1,0 @@
-node_modules/
-.pnpm-debug.log
-
-repos/*
-!repos/.empty
