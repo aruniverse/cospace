@@ -2,46 +2,12 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Introduction
 
-Let's discover **Docusaurus in less than 5 minutes**.
+> Seriously? You want **another** monorepo tool?!
 
-## Getting Started
+So you've broken your monolithic codebase into a monorepo separating concerns into separate packages. You're able to take advantage of shared code, tooling and reuse it across your monorepo. But you had to break your monorepo up further due to different teams wanting to use different tools, move at a faster pace and you just don't have the bandwidth to build out tooling and infrastructure to easily support them all. Now you're consistently working across multiple (mono)repos and there are multiple packages shared across them. It's a pain to manually run `npm link` for each and every package. Wouldn't it be convenient if you could have a massive monorepo linking them all together? Here's where `CoSpace` comes in.
 
-Get started by **creating a new site**.
+<!-- For example lets say you have a monorepo with an SDK from your Platfrom team, and you're working on an app from one of the Product teams.  -->
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
-
-### What you'll need
-
-- [Node.js](https://nodejs.org/en/download/) version 14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+`CoSpace` is by no means perfect, but it's super helpful.

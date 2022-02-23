@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require("prism-react-renderer/themes/github");
+const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -13,8 +13,8 @@ const config = {
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
-  organizationName: "aruniverse", // Usually your GitHub org/user name.
-  projectName: "cospace", // Usually your repo name.
+  organizationName: "aruniverse",
+  projectName: "cospace",
 
   presets: [
     [
@@ -23,15 +23,13 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          // Please change this to your repo.
           editUrl:
-            "https://github.com/aruniverse/cospace/tree/master/create-docusaurus/templates/shared/",
+            "https://github.com/aruniverse/cospace/tree/master/docs/docs/",
         },
         blog: {
           showReadingTime: true,
-          // Please change this to your repo.
           editUrl:
-            "https://github.com/aruniverse/cospace/tree/master/create-docusaurus/templates/shared/",
+            "https://github.com/aruniverse/cospace/tree/master/docs/blogs/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -53,10 +51,10 @@ const config = {
           {
             type: "doc",
             docId: "intro",
-            position: "left",
-            label: "Tutorial",
+            position: "right",
+            label: "Docs",
           },
-          { to: "/blog", label: "Blog", position: "left" },
+          // { to: "/blog", label: "Blog", position: "right" },
           {
             href: "https://github.com/aruniverse/cospace",
             label: "GitHub",
@@ -71,7 +69,7 @@ const config = {
             title: "Docs",
             items: [
               {
-                label: "Tutorial",
+                label: "Documentation",
                 to: "/docs/intro",
               },
             ],
@@ -88,10 +86,10 @@ const config = {
           {
             title: "More",
             items: [
-              {
-                label: "Blog",
-                to: "/blog",
-              },
+              // {
+              //   label: "Blog",
+              //   to: "/blog",
+              // },
               {
                 label: "GitHub",
                 href: "https://github.com/aruniverse/cospace",
@@ -99,7 +97,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} CoSpace. Built with Docusaurus.`,
+        copyright: `MIT Licensed | Copyright © ${new Date().getFullYear()} Arun George`,
       },
       prism: {
         theme: lightCodeTheme,
