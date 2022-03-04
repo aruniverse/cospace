@@ -1,0 +1,14 @@
+{
+  "name": "cospace-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "purge": "cospace purge",
+    "list-pkgs": "pnpm ls -r --depth -1"
+  },
+  "packageManager": "pnpm",
+  "devDependencies": {
+    "cospace": "workspace:*"
+  }
+}

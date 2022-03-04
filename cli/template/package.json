@@ -6,7 +6,7 @@
     "preinstall": "npx only-allow pnpm",
     "build": "lage build",
     "build:clean": "lage build --no-cache",
-    "clean": "lage clean --no-cache && cospace purge",
+    "clean": "lage clean --no-cache && cospace purge && pnpm i -w cospace",
     "setOverrides": "cospace override"
   },
   "devDependencies": {

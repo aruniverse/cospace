@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./cospace
+        working-directory: ./cli
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
