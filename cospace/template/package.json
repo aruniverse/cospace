@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "cospace": "latest",
-    "lage": "latest"
+    "lage": "^1.5.1"
   },
   "pnpm": {
     "overrides": {},
