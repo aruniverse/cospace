@@ -103,7 +103,11 @@ const purge = async () => {
     })
   ).map((pkg) => pkg.path);
 
-  await Promise.all(paths.map((path) => fs.remove(`${path}/node_modules`)));
+  await Promise.all(paths.map((path) => {
+    const nodeModulesPath = `${path}/node_modules`;
+    console.log(`Removing ${nodeModulesPath}`);
+    return fs.remove(nodeModulesPath, (err) => { if (err) console.error(err) });
+  }));
 
   console.log("All node_modules have been purged from the CoSpace.");
 };
