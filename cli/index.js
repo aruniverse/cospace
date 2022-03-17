@@ -103,11 +103,15 @@ const purge = async () => {
     })
   ).map((pkg) => pkg.path);
 
-  await Promise.all(paths.map((path) => {
-    const nodeModulesPath = `${path}/node_modules`;
-    console.log(`Removing ${nodeModulesPath}`);
-    return fs.remove(nodeModulesPath, (err) => { if (err) console.error(err) });
-  }));
+  await Promise.all(
+    paths.map((p) => {
+      const nodeModulesPath = path.join(p, "node_modules");
+      console.log(`Removing ${nodeModulesPath}`);
+      return fs.remove(nodeModulesPath, (err) => {
+        if (err) console.error(err);
+      });
+    })
+  );
 
   console.log("All node_modules have been purged from the CoSpace.");
 };
@@ -126,16 +130,17 @@ const run = async () => {
 
   checkPnpmInstalled();
 
-  if (input[0] === "init") {
-    await init(input[1]);
-  } else if (input[0] === "override") {
-    await overridePnpm();
-  } else if (input[0] === "purge") {
-    await purge();
-  } else {
-    console.log(
-      `Unrecognized command, ${input[0]}, please try again with --help for more info.`
-    );
+  switch (input[0]) {
+    case "init":
+      return await init(input[1]);
+    case "override":
+      return await overridePnpm();
+    case "purge":
+      return await purge();
+    default:
+      console.error(
+        `Unrecognized command, ${input[0]}, please try again with --help for more info.`
+      );
   }
 };
 

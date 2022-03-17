@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aruniverse/cospace/tree/master/cospace"
+    "url": "https://github.com/aruniverse/cospace/tree/master/cospace/cli"
   },
   "type": "module",
   "bin": {
