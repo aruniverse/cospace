@@ -6,7 +6,7 @@ import fs from "fs-extra";
 import meow from "meow";
 import { execSync } from "child_process";
 
-const Actions = {
+const Commands = {
   INIT: "init",
   OVERRIDE: "override",
   PURGE: "purge",
@@ -17,12 +17,12 @@ const help = `
     $ npx cospace <command> [<args>] 
 
   Commands:
-    ${Actions.INIT} <dir>          Initialize a new CoSpace
+    ${Commands.INIT} <dir>          Initialize a new CoSpace
 
         If <dir> is not provided, will default to current dir
 
-    ${Actions.OVERRIDE}            Override the CoSpace's pnpm config
-    ${Actions.PURGE}               Purge all node_modules from the CoSpace
+    ${Commands.OVERRIDE}            Override the CoSpace's pnpm config
+    ${Commands.PURGE}               Purge all node_modules from the CoSpace
 
   Flags:
     --help, -h          Show this help message
@@ -133,11 +133,11 @@ const run = async () => {
   checkPnpmInstalled();
 
   switch (input[0]) {
-    case Actions.INIT:
+    case Commands.INIT:
       return await init(input[1]);
-    case Actions.OVERRIDE:
+    case Commands.OVERRIDE:
       return await overridePnpm();
-    case Actions.PURGE:
+    case Commands.PURGE:
       return await purge();
     default:
       console.error(
