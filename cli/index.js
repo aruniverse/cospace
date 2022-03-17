@@ -111,9 +111,7 @@ const purge = async () => {
     paths.map((p) => {
       const nodeModulesPath = path.join(p, "node_modules");
       console.log(`Purging ${nodeModulesPath}`);
-      return fs.remove(nodeModulesPath, (err) => {
-        if (err) console.error(err);
-      });
+      return fs.remove(nodeModulesPath);
     })
   );
 
