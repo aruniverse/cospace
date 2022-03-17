@@ -90,14 +90,34 @@ const overridePnpm = async () => {
     }, {});
 
   const pkgJsonData = await fs.readJSON(pkgJsonPath);
+  const prev = Object.keys(pkgJsonData.pnpm.overrides);
+  const next = Object.keys(overrides);
 
   pkgJsonData.pnpm.overrides = overrides;
-
   await fs.writeJSON(pkgJsonPath, pkgJsonData, { spaces: 2 });
 
   console.log(
     "Your CoSpace's workspace links have been overriden. Run `pnpm install`, `pnpm build` and you're good to go!"
   );
+
+  const removed = prev.filter((name) => !next.includes(name));
+  const added = next.filter((name) => !prev.includes(name));
+
+  if (removed.length) {
+    console.log(
+      `\nYou removed the following packages from your CoSpace:\n- ${removed.join(
+        "\n- "
+      )}`
+    );
+  }
+  if (added.length) {
+    console.log(
+      `\nYou added the following packages to your CoSpace:\n- ${added.join(
+        "\n- "
+      )}`
+    );
+  }
+
 };
 
 const purge = async () => {
