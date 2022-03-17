@@ -6,17 +6,23 @@ import fs from "fs-extra";
 import meow from "meow";
 import { execSync } from "child_process";
 
+const Actions = {
+  INIT: "init",
+  OVERRIDE: "override",
+  PURGE: "purge",
+}
+
 const help = `
   Usage:
     $ npx cospace <command> [<args>] 
 
   Commands:
-    init <dir>          Initialize a new CoSpace
+    ${Actions.INIT} <dir>          Initialize a new CoSpace
 
         If <dir> is not provided, will default to current dir
 
-    override            Override the CoSpace's pnpm config
-    purge               Purge all node_modules from the CoSpace
+    ${Actions.OVERRIDE}            Override the CoSpace's pnpm config
+    ${Actions.PURGE}               Purge all node_modules from the CoSpace
 
   Flags:
     --help, -h          Show this help message
@@ -74,9 +80,7 @@ const overridePnpm = async () => {
     })
   )
     .map((pkg) => {
-      if (!pkg.private) {
-        return pkg.name;
-      }
+      if (!pkg.private) return pkg.name;
     })
     .filter((name) => name)
     .sort()
@@ -92,7 +96,7 @@ const overridePnpm = async () => {
   await fs.writeJSON(pkgJsonPath, pkgJsonData, { spaces: 2 });
 
   console.log(
-    "Your CoSpace's workspace links have been overriden. Run install, build and you're good to go!"
+    "Your CoSpace's workspace links have been overriden. Run `pnpm install`, `pnpm build` and you're good to go!"
   );
 };
 
@@ -106,7 +110,7 @@ const purge = async () => {
   await Promise.all(
     paths.map((p) => {
       const nodeModulesPath = path.join(p, "node_modules");
-      console.log(`Removing ${nodeModulesPath}`);
+      console.log(`Purging ${nodeModulesPath}`);
       return fs.remove(nodeModulesPath, (err) => {
         if (err) console.error(err);
       });
@@ -131,11 +135,11 @@ const run = async () => {
   checkPnpmInstalled();
 
   switch (input[0]) {
-    case "init":
+    case Actions.INIT:
       return await init(input[1]);
-    case "override":
+    case Actions.OVERRIDE:
       return await overridePnpm();
-    case "purge":
+    case Actions.PURGE:
       return await purge();
     default:
       console.error(
