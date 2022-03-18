@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # Acknowledgements
@@ -11,6 +11,9 @@ sidebar_position: 4
 - [lage](https://microsoft.github.io/lage/)
 
 ## Special thanks to
+
+- [@calebmshafer](https://github.com/calebmshafer)
+  - Inspired and helped design the first initial prototype which used [Rush](https://rushjs.io/) to manage the linking of packages.
 
 - [@medokin](https://github.com/medokin)
   - For transferring the [cospace](https://www.npmjs.com/package/cospace) package name ownership over.

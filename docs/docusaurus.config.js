@@ -12,7 +12,7 @@ const config = {
   baseUrl: "/cospace/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
-  favicon: "img/favicon.ico",
+  // favicon: "img/favicon.ico",
   organizationName: "aruniverse",
   projectName: "cospace",
 
@@ -41,12 +41,16 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      colorMode: {
+        defaultMode: "dark",
+        respectPrefersColorScheme: true,
+      },
       navbar: {
         title: "CoSpace",
-        logo: {
-          alt: "CoSpace Logo",
-          src: "img/logo.svg",
-        },
+        // logo: {
+        //   alt: "CoSpace Logo",
+        //   src: "img/logo.svg",
+        // },
         items: [
           {
             type: "doc",
