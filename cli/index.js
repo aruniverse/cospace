@@ -6,17 +6,23 @@ import fs from "fs-extra";
 import meow from "meow";
 import { execSync } from "child_process";
 
+const Commands = {
+  INIT: "init",
+  OVERRIDE: "override",
+  PURGE: "purge",
+}
+
 const help = `
   Usage:
     $ npx cospace <command> [<args>] 
 
   Commands:
-    init <dir>          Initialize a new CoSpace
+    ${Commands.INIT} <dir>          Initialize a new CoSpace
 
         If <dir> is not provided, will default to current dir
 
-    override            Override the CoSpace's pnpm config
-    purge               Purge all node_modules from the CoSpace
+    ${Commands.OVERRIDE}            Override the CoSpace's pnpm config
+    ${Commands.PURGE}               Purge all node_modules from the CoSpace
 
   Flags:
     --help, -h          Show this help message
@@ -74,9 +80,7 @@ const overridePnpm = async () => {
     })
   )
     .map((pkg) => {
-      if (!pkg.private) {
-        return pkg.name;
-      }
+      if (!pkg.private) return pkg.name;
     })
     .filter((name) => name)
     .sort()
@@ -86,14 +90,34 @@ const overridePnpm = async () => {
     }, {});
 
   const pkgJsonData = await fs.readJSON(pkgJsonPath);
+  const prev = Object.keys(pkgJsonData.pnpm.overrides);
+  const next = Object.keys(overrides);
 
   pkgJsonData.pnpm.overrides = overrides;
-
   await fs.writeJSON(pkgJsonPath, pkgJsonData, { spaces: 2 });
 
   console.log(
-    "Your CoSpace's workspace links have been overriden. Run install, build and you're good to go!"
+    "Your CoSpace's workspace links have been overriden. Run `pnpm install`, `pnpm build` and you're good to go!"
   );
+
+  const removed = prev.filter((name) => !next.includes(name));
+  const added = next.filter((name) => !prev.includes(name));
+
+  if (removed.length) {
+    console.log(
+      `\nYou removed the following packages from your CoSpace:\n- ${removed.join(
+        "\n- "
+      )}`
+    );
+  }
+  if (added.length) {
+    console.log(
+      `\nYou added the following packages to your CoSpace:\n- ${added.join(
+        "\n- "
+      )}`
+    );
+  }
+
 };
 
 const purge = async () => {
@@ -103,7 +127,13 @@ const purge = async () => {
     })
   ).map((pkg) => pkg.path);
 
-  await Promise.all(paths.map((path) => fs.remove(`${path}/node_modules`)));
+  await Promise.all(
+    paths.map((p) => {
+      const nodeModulesPath = path.join(p, "node_modules");
+      console.log(`Purging ${nodeModulesPath}`);
+      return fs.remove(nodeModulesPath);
+    })
+  );
 
   console.log("All node_modules have been purged from the CoSpace.");
 };
@@ -122,16 +152,17 @@ const run = async () => {
 
   checkPnpmInstalled();
 
-  if (input[0] === "init") {
-    await init(input[1]);
-  } else if (input[0] === "override") {
-    await overridePnpm();
-  } else if (input[0] === "purge") {
-    await purge();
-  } else {
-    console.log(
-      `Unrecognized command, ${input[0]}, please try again with --help for more info.`
-    );
+  switch (input[0]) {
+    case Commands.INIT:
+      return await init(input[1]);
+    case Commands.OVERRIDE:
+      return await overridePnpm();
+    case Commands.PURGE:
+      return await purge();
+    default:
+      console.error(
+        `Unrecognized command, ${input[0]}, please try again with --help for more info.`
+      );
   }
 };
 
