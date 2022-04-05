@@ -3,10 +3,11 @@
   "version": "0.4.3",
   "description": "Setup a `CoSpace` to link multiple (mono)repos together!",
   "author": "https://github.com/aruniverse",
+  "homepage": "https://aruniverse.github.io/cospace",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aruniverse/cospace/tree/master/cospace/cli"
+    "url": "https://github.com/aruniverse/cospace.git"
   },
   "type": "module",
   "bin": {

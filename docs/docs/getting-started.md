@@ -1,14 +1,16 @@
-# CoSpace
+---
+sidebar_position: 2
+---
 
-Setup a `CoSpace` to link multiple (mono)repos together!
+# Getting Started
 
-## Powered by
+## Prerequisites
 
-- [vscode multi-root workspace](https://code.visualstudio.com/docs/editor/multi-root-workspaces)
-- [pnpm workspaces](https://pnpm.io/workspaces)
-- [lage](https://microsoft.github.io/lage/)
+- [pnpm](https://pnpm.io/installation)
+  - If you're using [Node.js](https://nodejs.org/en/download/) version ^14.19 or ^16.9 you just need to enable pnpm via [corepack](https://github.com/nodejs/corepack).
+  - Otherwise install via `npm i -g pnpm`
 
-## Getting started
+## Create a new `CoSpace`
 
 ### Initialize
 

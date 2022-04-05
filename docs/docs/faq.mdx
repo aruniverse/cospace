@@ -1,0 +1,18 @@
+---
+title: "Frequently Asked Questions"
+sidebar_label: "FAQ"
+sidebar_position: 4
+---
+
+## What are the Pros & Cons?
+
+### Pros
+
+- Easily link multiple (mono)repos together that use different package managers.
+- Don't have to manually link packages yourself with `npm link` or `yarn link` or `pnpm link`.
+- Ignore [semver](https://semver.org/) versioning, especially useful when working with pre-release versions.
+- Verify your dependencies are set up correctly.
+
+### Cons
+
+- If a package's dependencies are updated, the lockfile its apart of will not be updated, and you'll have to do that yourself outside the CoSpace unless you purge and re-install.
