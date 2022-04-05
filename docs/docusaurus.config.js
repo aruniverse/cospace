@@ -107,6 +107,11 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      algolia: {
+        appId: "PXFHLD2IHL",
+        apiKey: "cfd2fa2f7412bc3051697a0bf8c80852",
+        indexName: "cospace",
+      },
     }),
 };
 
