@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[169],{4078:function(s){s.exports=JSON.parse('{"allTagsPath":"/cospace/blog/tags","slug":"/cospace/blog/tags/hello","name":"hello","count":2,"permalink":"/cospace/blog/tags/hello"}')}}]);
