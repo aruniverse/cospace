@@ -14,8 +14,6 @@
     "lage": "^1.5.1"
   },
   "pnpm": {
-    "overrides": {},
-    "prefer-workspace-packages": true,
-    "link-workspace-packages": "deep"
+    "overrides": {}
   }
 }
