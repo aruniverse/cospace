@@ -1,5 +1,8 @@
 lockfileVersion: 5.3
 
+overrides:
+  cospace: workspace:*
+
 importers:
 
   .:

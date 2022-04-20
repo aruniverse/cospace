@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { fileURLToPath } from "url";
-import * as path from "path";
+import path from "path";
 import fs from "fs-extra";
 import meow from "meow";
 import { execSync } from "child_process";
@@ -10,7 +10,7 @@ const Commands = {
   INIT: "init",
   OVERRIDE: "override",
   PURGE: "purge",
-}
+};
 
 const help = `
   Usage:
@@ -113,11 +113,10 @@ const overridePnpm = async () => {
   if (added.length) {
     console.log(
       `\nYou added the following packages to your CoSpace:\n- ${added.join(
-        "\n- "
+        "\n+ "
       )}`
     );
   }
-
 };
 
 const purge = async () => {

@@ -1,8 +1,9 @@
 {
   "name": "cospace",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Setup a `CoSpace` to link multiple (mono)repos together!",
   "author": "https://github.com/aruniverse",
+  "homepage": "https://aruniverse.github.io/cospace/",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -20,7 +21,11 @@
     "cospace",
     "monorepo",
     "pnpm",
-    "workspaces"
+    "workspace",
+    "workspaces",
+    "link",
+    "symlinks",
+    "dependencies"
   ],
   "dependencies": {
     "fs-extra": "^10.0.0",

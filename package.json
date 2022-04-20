@@ -13,8 +13,6 @@
   "pnpm": {
     "overrides": {
       "cospace": "workspace:*"
-    },
-    "prefer-workspace-packages": true,
-    "link-workspace-packages": "deep"
+    }
   }
 }

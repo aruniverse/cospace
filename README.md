@@ -10,19 +10,35 @@ Setup a `CoSpace` to link multiple (mono)repos together!
 
 ## Getting started
 
-1. Install `cospace`, then run `npx cospace init`
+### Initialize
 
-1. Clone all the repos you want to link together under the `repos` directory. You can use [sparse checkouts](https://github.blog/2020-01-17-bring-your-monorepo-down-to-size-with-sparse-checkout/) to only clone the directories you need.
+```bash
+npx cospace@latest init my-cospace
+```
 
-1. Update the [pnpm-workspace.yaml](pnpm-workspace.yaml) file with all the packages you want to add to your CoSpace.
+### Link your (mono)repos
 
-1. Update the [cospace.code-workspace](cospace.code-workspace) file with all the repos you want to add to your VsCode multi root workspace.
+```bash
+cd my-cospace
+```
 
-1. (Optional) Run `pnpm setOverrides` to automatically update the `pnpm.overrides` section of the CoSpace's [package.json](package.json), to use the local package version from the workspace, disregarding semver. Useful for when you have pre-release versions of packages in your workspace.
+1. Clone all the repos you want to link together under the `repos` sub directory.
 
-1. Run `pnpm install` to install all the packages you've added to your CoSpace.
+1. Update the `pnpm-workspace.yaml` file with all the packages you want to add to your `CoSpace`. By default all packages under the `repos` sub directory will be added to your `CoSpace`; you will probably want to be more specific and build/link only what you need.
 
-1. Run `pnpm build` to build all the packages you've added to your CoSpace using your monorepo task runner. I'm using [lage](https://microsoft.github.io/lage/), but [turborepo](https://turborepo.org/docs) should theoretically work.
+1. Update the `cospace.code-workspace` file with all the repos you want to add to your [vscode multi-root workspace](https://code.visualstudio.com/docs/editor/multi-root-workspaces).
+
+1. Run `pnpm exec cospace override` to automatically update the `pnpm.overrides` section of the `CoSpace`'s `package.json`, to link all the dependencies together with the copy found in the workspace. This will ignore [semver](https://semver.org/) and always use the local package version from the workspace, very useful for when you have pre-release versions of packages in your workspace.
+
+1. Run `pnpm install` to install all dependecies in your workspace and link all the packages you've added to your `CoSpace`.
+
+1. Run `pnpm build` to build all the packages you've added to your `CoSpace` using your monorepo task runner. By default we use [lage](https://microsoft.github.io/lage/), but [turborepo](https://turborepo.org/docs) should work as well.
+
+For more information visit the <a href="https://aruniverse.github.io/cospace/" target="_blank">docs site</a>.
+
+## example usage
+
+- <a href="https://github.com/aruniverse/itwin-cospace" target="_blank">itwin-cospace</a>, an example of a `CoSpace` to help develop with the iTwin Platform.
 
 ## Notes
 
@@ -44,26 +60,3 @@ git checkout {branchName}
 git sparse-checkout init --cone
 git sparse-checkout set [...allSubDirs]
 ```
-
-### pnpm
-
-#### [link-workspace-packages](https://pnpm.io/workspaces#link-workspace-packages)
-
-- "If you need local packages to also be linked to subdependencies, you can use the `deep` setting"
-
-  ```json
-  "pnpm": {
-      "link-workspace-packages": "deep"
-  }
-  ```
-
-#### [prefer-workspace-packages](https://pnpm.io/workspaces#prefer-workspace-packages)
-
-- pros: don't have to explicitly list all packages in the `pnpm.overrides` section.
-- cons: if you're linking a repo with HEAD pointing to pre-release packages, those won't be used/linked due to semver 😕
-  
-  ```json
-  "pnpm": {
-      "prefer-workspace-packages": true
-  }
-  ```
