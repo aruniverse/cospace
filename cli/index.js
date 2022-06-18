@@ -19,7 +19,7 @@ const help = `
   Commands:
     ${Commands.INIT} <dir>          Initialize a new CoSpace
 
-        If <dir> is not provided, will default to current dir
+        If <dir> is not provided, will default to the current directory
 
     ${Commands.OVERRIDE}            Override the CoSpace's pnpm config
     ${Commands.PURGE}               Purge all node_modules from the CoSpace
@@ -42,7 +42,7 @@ const checkPnpmInstalled = () => {
 
 const init = async (cospaceDir = ".") => {
   const relativeDir = path.relative(process.cwd(), cospaceDir);
-  if (relativeDir !== "") {
+  if (!relativeDir) {
     if (fs.existsSync(cospaceDir)) {
       console.log(
         `️Oops, "${relativeDir}" already exists. Please try again with a different directory.`
@@ -90,8 +90,12 @@ const overridePnpm = async () => {
     }, {});
 
   const pkgJsonData = await fs.readJSON(pkgJsonPath);
-  const prev = Object.keys(pkgJsonData.pnpm.overrides);
+  const prev = Object.keys(pkgJsonData?.pnpm?.overrides ?? {});
   const next = Object.keys(overrides);
+
+  if (!pkgJsonData.pnpm) {
+    pkgJsonData.pnpm = {};
+  }
 
   pkgJsonData.pnpm.overrides = overrides;
   await fs.writeJSON(pkgJsonPath, pkgJsonData, { spaces: 2 });
@@ -112,7 +116,7 @@ const overridePnpm = async () => {
   }
   if (added.length) {
     console.log(
-      `\nYou added the following packages to your CoSpace:\n- ${added.join(
+      `\nYou added the following packages to your CoSpace:\n+ ${added.join(
         "\n+ "
       )}`
     );
@@ -160,7 +164,7 @@ const run = async () => {
       return await purge();
     default:
       console.error(
-        `Unrecognized command, ${input[0]}, please try again with --help for more info.`
+        `Unrecognized command, "${input[0]}", please try again with --help for more info.`
       );
   }
 };

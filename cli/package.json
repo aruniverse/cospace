@@ -1,6 +1,6 @@
 {
   "name": "cospace",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Setup a `CoSpace` to link multiple (mono)repos together!",
   "author": "https://github.com/aruniverse",
   "homepage": "https://aruniverse.github.io/cospace/",
