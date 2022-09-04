@@ -1,16 +1,30 @@
 #!/usr/bin/env node
 
-import { fileURLToPath } from "url";
-import path from "path";
+import { execSync } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import fs from "fs-extra";
 import meow from "meow";
-import { execSync } from "child_process";
 
-const Commands = {
-  INIT: "init",
-  OVERRIDE: "override",
-  PURGE: "purge",
-};
+// since __filename and __dirname are undefined for esm, define ourselves
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const PACKAGE_JSON = "package.json";
+const WORKSPACE_VERSION = "workspace:*";
+
+interface PnpmPackageInfo {
+  name: string;
+  version: string;
+  private: boolean;
+  path: string;
+}
+
+const enum Commands {
+  INIT = "init",
+  OVERRIDE = "override",
+  PURGE = "purge",
+}
 
 const help = `
   Usage:
@@ -27,14 +41,16 @@ const help = `
   Flags:
     --help, -h          Show this help message
     --version, -v       Show the version of this script
+
+    --includePrivate    Add private packages to CoSpace's pnpm overrides
 `;
 
 const checkPnpmInstalled = () => {
   try {
     execSync("pnpm -v", { stdio: "ignore" });
-  } catch (e) {
+  } catch {
     console.error(
-      "Please install pnpm using 'npm install -g pnpm' before using this script"
+      "Please install pnpm before using CoSpace, see https://pnpm.io/installation"
     );
     process.exit(1);
   }
@@ -53,16 +69,13 @@ const init = async (cospaceDir = ".") => {
     }
   }
 
-  console.log(`\nCreating cospace in ${cospaceDir}...`);
-
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
+  console.log(`\nCreating CoSpace in ${cospaceDir}...`);
   await fs.copy(path.join(__dirname, "./template"), cospaceDir);
-
   process.chdir(cospaceDir);
+  await fs.mkdir("repos");
   try {
     execSync("pnpm i");
-  } catch (e) {
+  } catch {
     console.error("Failed to install, please run install prior to CoSpace use");
   }
 
@@ -71,41 +84,51 @@ const init = async (cospaceDir = ".") => {
   );
 };
 
-const overridePnpm = async () => {
-  const pkgJsonPath = "package.json";
-
-  const overrides = JSON.parse(
+const getWorkspacePkgs = (): PnpmPackageInfo[] => {
+  return JSON.parse(
     execSync("pnpm ls -r --depth -1 --json", {
       encoding: "utf8",
     })
-  )
-    .map((pkg) => {
-      if (!pkg.private) return pkg.name;
-    })
-    .filter((name) => name)
-    .sort()
-    .reduce((overrides, name) => {
-      overrides[name] = "workspace:*";
-      return overrides;
-    }, {});
+  );
+};
 
-  const pkgJsonData = await fs.readJSON(pkgJsonPath);
-  const prev = Object.keys(pkgJsonData?.pnpm?.overrides ?? {});
-  const next = Object.keys(overrides);
-
+const overridePnpm = async (includePrivate: boolean) => {
+  const pkgJsonData = await fs.readJSON(PACKAGE_JSON);
   if (!pkgJsonData.pnpm) {
     pkgJsonData.pnpm = {};
   }
+  const currentOverrides = pkgJsonData?.pnpm?.overrides ?? {};
+
+  const cospaceOverrides = getWorkspacePkgs()
+    .map((pkg) => {
+      return !pkg.private || (includePrivate && pkg.private) ? pkg.name : "";
+    })
+    .filter((name) => name)
+    .sort()
+    .reduce((overrides: { [pkgName: string]: string }, name: string) => {
+      overrides[name] = WORKSPACE_VERSION;
+      return overrides;
+    }, {});
+
+  const userOverrides = Object.fromEntries(
+    Object.entries(currentOverrides).filter(([_pkgName, version]) => {
+      return version !== WORKSPACE_VERSION;
+    })
+  );
+
+  const overrides = { ...cospaceOverrides, ...userOverrides };
+  const cur = Object.keys(currentOverrides);
+  const next = Object.keys(overrides);
 
   pkgJsonData.pnpm.overrides = overrides;
-  await fs.writeJSON(pkgJsonPath, pkgJsonData, { spaces: 2 });
+  await fs.writeJSON(PACKAGE_JSON, pkgJsonData, { spaces: 2 });
 
   console.log(
     "Your CoSpace's workspace links have been overriden. Run `pnpm install`, `pnpm build` and you're good to go!"
   );
 
-  const removed = prev.filter((name) => !next.includes(name));
-  const added = next.filter((name) => !prev.includes(name));
+  const removed = cur.filter((name) => !next.includes(name));
+  const added = next.filter((name) => !cur.includes(name));
 
   if (removed.length) {
     console.log(
@@ -124,15 +147,9 @@ const overridePnpm = async () => {
 };
 
 const purge = async () => {
-  const paths = JSON.parse(
-    execSync("pnpm ls -r --depth -1 --json", {
-      encoding: "utf8",
-    })
-  ).map((pkg) => pkg.path);
-
   await Promise.all(
-    paths.map((p) => {
-      const nodeModulesPath = path.join(p, "node_modules");
+    getWorkspacePkgs().map((pkg) => {
+      const nodeModulesPath = path.join(pkg.path, "node_modules");
       console.log(`Purging ${nodeModulesPath}`);
       return fs.remove(nodeModulesPath);
     })
@@ -144,9 +161,11 @@ const purge = async () => {
 const run = async () => {
   const { input, flags, showHelp, showVersion } = meow(help, {
     importMeta: import.meta,
+    allowUnknownFlags: false,
     flags: {
       help: { type: "boolean", default: false, alias: "h" },
       version: { type: "boolean", default: false, alias: "v" },
+      includePrivate: { type: "boolean", default: false },
     },
   });
 
@@ -155,16 +174,18 @@ const run = async () => {
 
   checkPnpmInstalled();
 
-  switch (input[0]) {
+  const [command, ...args] = input;
+
+  switch (command) {
     case Commands.INIT:
-      return await init(input[1]);
+      return await init(args[0]);
     case Commands.OVERRIDE:
-      return await overridePnpm();
+      return await overridePnpm(flags.includePrivate);
     case Commands.PURGE:
       return await purge();
     default:
       console.error(
-        `Unrecognized command, "${input[0]}", please try again with --help for more info.`
+        `Unrecognized command, "${command}", please try again with --help for more info.`
       );
   }
 };
