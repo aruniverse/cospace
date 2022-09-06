@@ -11,14 +11,14 @@
   },
   "type": "module",
   "bin": {
-    "cospace": "lib/index.js"
+    "cospace": "index.js"
   },
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf lib"
+    "clean": "rimraf index.js"
   },
   "files": [
-    "lib/index.js",
+    "index.js",
     "template"
   ],
   "keywords": [

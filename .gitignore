@@ -4,4 +4,4 @@ node_modules/
 test/
 docs/
 
-lib/
+index.js

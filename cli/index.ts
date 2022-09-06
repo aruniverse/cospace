@@ -117,8 +117,6 @@ const overridePnpm = async (includePrivate: boolean) => {
   );
 
   const overrides = { ...cospaceOverrides, ...userOverrides };
-  const cur = Object.keys(currentOverrides);
-  const next = Object.keys(overrides);
 
   pkgJsonData.pnpm.overrides = overrides;
   await fs.writeJSON(PACKAGE_JSON, pkgJsonData, { spaces: 2 });
@@ -126,6 +124,9 @@ const overridePnpm = async (includePrivate: boolean) => {
   console.log(
     "Your CoSpace's workspace links have been overriden. Run `pnpm install`, `pnpm build` and you're good to go!"
   );
+
+  const cur = Object.keys(currentOverrides);
+  const next = Object.keys(overrides);
 
   const removed = cur.filter((name) => !next.includes(name));
   const added = next.filter((name) => !cur.includes(name));
