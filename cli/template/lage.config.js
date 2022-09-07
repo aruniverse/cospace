@@ -1,8 +1,12 @@
+/** @type {import("lage").ConfigOptions } */
 module.exports = {
   pipeline: {
     build: ["^build"],
     test: ["build"],
     lint: [],
-    clean: [],
+    clean: {
+      cache: false,
+    },
   },
+  cache: true,
 };

@@ -3,3 +3,5 @@ node_modules/
 
 test/
 docs/
+
+index.js
