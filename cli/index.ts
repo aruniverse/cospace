@@ -4,6 +4,7 @@ import { execSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "fs-extra";
+import { globby } from "globby";
 import meow from "meow";
 
 // since __filename and __dirname are undefined for esm, define ourselves
@@ -24,6 +25,7 @@ const enum Commands {
   INIT = "init",
   OVERRIDE = "override",
   PURGE = "purge",
+  UPDATE_LOCKFILE = "update-lockfile",
 }
 
 const help = `
@@ -159,6 +161,49 @@ const purge = async () => {
   console.log("All node_modules have been purged from the CoSpace.");
 };
 
+const updateLockfile = async () => {
+  const pnpmStorePath = execSync("pnpm store path", { encoding: "utf8" });
+  const lockfiles = await globby(
+    [
+      "**/pnpm-lock.yaml",
+      "**/package-lock.json",
+      "**/yarn.lock",
+      "**/rush.json",
+      "!**/rush/pnpm-lock.yaml",
+    ],
+    {
+      absolute: true,
+      cwd: "./repos/",
+      ignore: ["**/node_modules/**"],
+      objectMode: true,
+    }
+  );
+  for (const lockfile of lockfiles) {
+    try {
+      console.log(`updating ${lockfile.path}`);
+      process.chdir(path.join(lockfile.path, ".."));
+      switch (lockfile.name) {
+        case "pnpm-lock.yaml":
+          execSync("pnpm i --lockfile-only", { stdio: "ignore" });
+          break;
+        case "yarn.lock":
+          // execSync("npm install --package-lock-only", { stdio: "ignore" });
+          execSync("yarn import", { stdio: "ignore" });
+          break;
+        case "package-lock.json":
+          execSync("npm i --package-lock-only", { stdio: "ignore" });
+          break;
+        case "rush.json":
+          process.env["RUSH_PNPM_STORE_PATH"] = pnpmStorePath;
+          execSync("pnpm dlx @microsoft/rush update", { stdio: "ignore" });
+          break;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+};
+
 const run = async () => {
   const { input, flags, showHelp, showVersion } = meow(help, {
     importMeta: import.meta,
@@ -184,6 +229,8 @@ const run = async () => {
       return await overridePnpm(flags.includePrivate);
     case Commands.PURGE:
       return await purge();
+    case Commands.UPDATE_LOCKFILE:
+      return await updateLockfile();
     default:
       console.error(
         `Unrecognized command, "${command}", please try again with --help for more info.`
