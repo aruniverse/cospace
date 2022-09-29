@@ -13,6 +13,8 @@ const __dirname = path.dirname(__filename);
 
 const PACKAGE_JSON = "package.json";
 const WORKSPACE_VERSION = "workspace:*";
+const PNPM_LOCKFILE = "pnpm-lock.yaml";
+const RUSH_JSON = "rush.json";
 
 interface PnpmPackageInfo {
   name: string;
@@ -165,11 +167,11 @@ const updateLockfile = async () => {
   const pnpmStorePath = execSync("pnpm store path", { encoding: "utf8" });
   const lockfiles = await globby(
     [
-      "**/pnpm-lock.yaml",
-      "**/package-lock.json",
-      "**/yarn.lock",
-      "**/rush.json",
-      "!**/rush/pnpm-lock.yaml",
+      `**/${PNPM_LOCKFILE}`,
+      `!**/rush/${PNPM_LOCKFILE}`,
+      `**/${RUSH_JSON}`,
+      // "**/package-lock.json",
+      // "**/yarn.lock",
     ],
     {
       absolute: true,
@@ -178,28 +180,33 @@ const updateLockfile = async () => {
       objectMode: true,
     }
   );
+
+  let rush_update_cmd = "rush update";
+  if (lockfiles.some((l) => l.name === RUSH_JSON)) {
+    try {
+      execSync("rush -h", { stdio: "ignore" });
+    } catch {
+      rush_update_cmd = "pnpm dlx @microsoft/rush update";
+    }
+  }
+
   for (const lockfile of lockfiles) {
     try {
-      console.log(`updating ${lockfile.path}`);
+      console.log(`Updating ${lockfile.path}`);
       process.chdir(path.join(lockfile.path, ".."));
       switch (lockfile.name) {
-        case "pnpm-lock.yaml":
-          execSync("pnpm i --lockfile-only", { stdio: "ignore" });
+        case PNPM_LOCKFILE:
+          execSync("pnpm i --lockfile-only", { stdio: "inherit" });
           break;
-        case "yarn.lock":
-          // execSync("npm install --package-lock-only", { stdio: "ignore" });
-          execSync("yarn import", { stdio: "ignore" });
-          break;
-        case "package-lock.json":
-          execSync("npm i --package-lock-only", { stdio: "ignore" });
-          break;
-        case "rush.json":
-          process.env["RUSH_PNPM_STORE_PATH"] = pnpmStorePath;
-          execSync("pnpm dlx @microsoft/rush update", { stdio: "ignore" });
+        case RUSH_JSON:
+          execSync(rush_update_cmd, {
+            stdio: "inherit",
+            env: { ...process.env, RUSH_PNPM_STORE_PATH: pnpmStorePath },
+          });
           break;
       }
     } catch (e) {
-      console.log(e);
+      console.log((e as Error).message);
     }
   }
 };
