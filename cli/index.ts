@@ -41,6 +41,7 @@ const help = `
 
     ${Commands.OVERRIDE}            Override the CoSpace's pnpm config
     ${Commands.PURGE}               Purge all node_modules from the CoSpace
+    ${Commands.UPDATE_LOCKFILE}     Update pnpm lockfiles found in the CoSpace
 
   Flags:
     --help, -h          Show this help message
@@ -49,9 +50,10 @@ const help = `
     --includePrivate    Add private packages to CoSpace's pnpm overrides
 `;
 
+let pnpmStorePath = "";
 const checkPnpmInstalled = () => {
   try {
-    execSync("pnpm -v", { stdio: "ignore" });
+    pnpmStorePath = execSync("pnpm store path", { encoding: "utf8" });
   } catch {
     console.error(
       "Please install pnpm before using CoSpace, see https://pnpm.io/installation"
@@ -164,7 +166,6 @@ const purge = async () => {
 };
 
 const updateLockfile = async () => {
-  const pnpmStorePath = execSync("pnpm store path", { encoding: "utf8" });
   const lockfiles = await globby(
     [
       `**/${PNPM_LOCKFILE}`,
