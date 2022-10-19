@@ -1,5 +1,10 @@
 # CoSpace
 
+## 0.6.0
+
+- Add `update-lockfile` command to update all `pnpm-lock.yaml`s found in the CoSpace
+  - Will update pnpm lockfiles used by [@microsoft/rush](https://rushjs.io/pages/intro/welcome/) by using [RUSH_PNPM_STORE_PATH](https://rushjs.io/pages/configs/environment_vars/#rush_pnpm_store_path) env var
+
 ## 0.5.0
 
 - Converted to TypeScript

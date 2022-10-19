@@ -4,6 +4,7 @@ import { execSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "fs-extra";
+import { globby } from "globby";
 import meow from "meow";
 
 // since __filename and __dirname are undefined for esm, define ourselves
@@ -12,6 +13,8 @@ const __dirname = path.dirname(__filename);
 
 const PACKAGE_JSON = "package.json";
 const WORKSPACE_VERSION = "workspace:*";
+const PNPM_LOCKFILE = "pnpm-lock.yaml";
+const RUSH_JSON = "rush.json";
 
 interface PnpmPackageInfo {
   name: string;
@@ -24,6 +27,7 @@ const enum Commands {
   INIT = "init",
   OVERRIDE = "override",
   PURGE = "purge",
+  UPDATE_LOCKFILE = "update-lockfile",
 }
 
 const help = `
@@ -37,6 +41,7 @@ const help = `
 
     ${Commands.OVERRIDE}            Override the CoSpace's pnpm config
     ${Commands.PURGE}               Purge all node_modules from the CoSpace
+    ${Commands.UPDATE_LOCKFILE}     Update all pnpm lockfiles found in the CoSpace
 
   Flags:
     --help, -h          Show this help message
@@ -45,9 +50,10 @@ const help = `
     --includePrivate    Add private packages to CoSpace's pnpm overrides
 `;
 
+let pnpmStorePath = "";
 const checkPnpmInstalled = () => {
   try {
-    execSync("pnpm -v", { stdio: "ignore" });
+    pnpmStorePath = execSync("pnpm store path", { encoding: "utf8" });
   } catch {
     console.error(
       "Please install pnpm before using CoSpace, see https://pnpm.io/installation"
@@ -159,6 +165,51 @@ const purge = async () => {
   console.log("All node_modules have been purged from the CoSpace.");
 };
 
+const updateLockfile = async () => {
+  const lockfiles = await globby(
+    [
+      `**/${PNPM_LOCKFILE}`,
+      `!**/rush/${PNPM_LOCKFILE}`,
+      `**/${RUSH_JSON}`,
+    ],
+    {
+      absolute: true,
+      cwd: "./repos/",
+      ignore: ["**/node_modules/**"],
+      objectMode: true,
+    }
+  );
+
+  let rush_update_cmd = "rush update";
+  if (lockfiles.some((l) => l.name === RUSH_JSON)) {
+    try {
+      execSync("rush -h", { stdio: "ignore" });
+    } catch {
+      rush_update_cmd = "pnpm dlx @microsoft/rush update";
+    }
+  }
+
+  for (const lockfile of lockfiles) {
+    try {
+      console.log(`Updating ${lockfile.path}`);
+      process.chdir(path.join(lockfile.path, ".."));
+      switch (lockfile.name) {
+        case PNPM_LOCKFILE:
+          execSync("pnpm i --lockfile-only", { stdio: "inherit" });
+          break;
+        case RUSH_JSON:
+          execSync(rush_update_cmd, {
+            stdio: "inherit",
+            env: { ...process.env, RUSH_PNPM_STORE_PATH: pnpmStorePath },
+          });
+          break;
+      }
+    } catch (e) {
+      console.log((e as Error).message);
+    }
+  }
+};
+
 const run = async () => {
   const { input, flags, showHelp, showVersion } = meow(help, {
     importMeta: import.meta,
@@ -184,6 +235,8 @@ const run = async () => {
       return await overridePnpm(flags.includePrivate);
     case Commands.PURGE:
       return await purge();
+    case Commands.UPDATE_LOCKFILE:
+      return await updateLockfile();
     default:
       console.error(
         `Unrecognized command, "${command}", please try again with --help for more info.`
