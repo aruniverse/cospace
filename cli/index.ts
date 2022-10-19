@@ -41,7 +41,7 @@ const help = `
 
     ${Commands.OVERRIDE}            Override the CoSpace's pnpm config
     ${Commands.PURGE}               Purge all node_modules from the CoSpace
-    ${Commands.UPDATE_LOCKFILE}     Update pnpm lockfiles found in the CoSpace
+    ${Commands.UPDATE_LOCKFILE}     Update all pnpm lockfiles found in the CoSpace
 
   Flags:
     --help, -h          Show this help message
@@ -171,8 +171,6 @@ const updateLockfile = async () => {
       `**/${PNPM_LOCKFILE}`,
       `!**/rush/${PNPM_LOCKFILE}`,
       `**/${RUSH_JSON}`,
-      // "**/package-lock.json",
-      // "**/yarn.lock",
     ],
     {
       absolute: true,
