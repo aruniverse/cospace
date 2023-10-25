@@ -34,7 +34,7 @@
   "dependencies": {
     "fs-extra": "^11.1.1",
     "globby": "^13.2.2",
-    "meow": "^10.1.5"
+    "meow": "^12.1.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.3",

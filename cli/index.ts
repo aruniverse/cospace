@@ -215,8 +215,8 @@ const run = async () => {
     importMeta: import.meta,
     allowUnknownFlags: false,
     flags: {
-      help: { type: "boolean", default: false, alias: "h" },
-      version: { type: "boolean", default: false, alias: "v" },
+      help: { type: "boolean", default: false, shortFlag: "h" },
+      version: { type: "boolean", default: false, shortFlag: "v" },
       includePrivate: { type: "boolean", default: false },
     },
   });
