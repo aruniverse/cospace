@@ -6,7 +6,7 @@
     "preinstall": "npx only-allow pnpm",
     "list-pkgs": "pnpm ls -r --depth -1"
   },
-  "packageManager": "pnpm@6.32.1",
+  "packageManager": "pnpm@7.33.6",
   "devDependencies": {
     "cospace": "workspace:*"
   },
