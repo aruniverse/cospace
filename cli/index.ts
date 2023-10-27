@@ -6,17 +6,10 @@ import { fileURLToPath } from "node:url";
 import fs from "fs-extra";
 import { globby } from "globby";
 import meow from "meow";
-// import open from "open";
 
 // import { parseArgs } from "node:util";
+// parseArgs({})
 
-// parseArgs({
-//   options: {
-
-//   }
-// })
-
-// import http from "node:http";
 import { explore } from "./explore.js";
 
 // since __filename and __dirname are undefined for esm, define ourselves
@@ -218,28 +211,6 @@ const updateLockfile = async () => {
     }
   }
 };
-
-// const explore = async () => {
-//   const server = http.createServer((req, res) => {
-//     if (req.method === "GET" && req.url === "/") {
-//       // const html = renderClient({
-//       //   title: "pnpm workspace graph",
-//       //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-//       //   viewerData: this._viewerData!,
-//       //   enableWebSocket: true,
-//       // });
-//       res.writeHead(200, { "Content-Type": "text/html" });
-//       // res.end(html);
-//     } else {
-//       // sirvMiddleware(req, res);
-//     }
-//   });
-//   server.listen({ port: 8765 }, () => {
-//     console.log("Listening on http://localhost:8765");
-//   });
-
-//   await open("http://localhost:8765");
-// };
 
 const run = async () => {
   const { input, flags, showHelp, showVersion } = meow(help, {
