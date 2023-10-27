@@ -2,3 +2,4 @@ packages:
   - 'cli'
   - 'docs'
   - 'explorer-next'
+  - 'explorer-react'
