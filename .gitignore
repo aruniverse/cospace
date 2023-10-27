@@ -4,6 +4,6 @@ node_modules/
 test/
 docs/
 
-index.js
+cli/**/*.js
 
 *.tsbuildinfo
