@@ -52,7 +52,7 @@ function App() {
           </ScrollArea>
         </TabsContent>
         <TabsContent value="dependencies">
-          <ScrollArea className="h-[900px] w-[550px] rounded-md border p-4">
+          <ScrollArea className="h-[700px] w-[550px] rounded-md border p-4">
             {/* <pre>{JSON.stringify(dependencies, null, 2)}</pre> */}
             {dependencies && Object.keys(dependencies)?.map((dep: any) => (
               <>
