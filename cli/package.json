@@ -32,14 +32,14 @@
     "dependencies"
   ],
   "dependencies": {
-    "fs-extra": "^10.0.0",
-    "globby": "^13.1.2",
-    "meow": "^10.0.0"
+    "fs-extra": "^11.2.0",
+    "globby": "^14.0.2",
+    "meow": "^13.2.0"
   },
   "devDependencies": {
-    "@types/fs-extra": "9.0.13",
-    "@types/node": "^16.0.0",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.8.2"
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.14.15",
+    "rimraf": "^5.0.10",
+    "typescript": "^5.5.4"
   }
 }
